@@ -1,0 +1,106 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f8fafc;
+    color: #1e293b;
+    height: 100vh;
+}
+.catalog-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+.catalog-sidebar {
+    width: 260px;
+    background-color: #1e293b;
+    color: #f8fafc;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.catalog-sidebar h2, .cart-sidebar h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+.catalog-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.catalog-item {
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: #cbd5e1;
+    transition: all 0.2s;
+}
+.catalog-item:hover {
+    background-color: #334155;
+    color: #fff;
+}
+.catalog-item.active {
+    background-color: #2563eb;
+    color: #fff;
+    font-weight: 600;
+}
+.catalog-content {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+#selected-title {
+    font-size: 1.75rem;
+    color: #0f172a;
+}
+#selected-description {
+    font-size: 0.95rem;
+    color: #64748b;
+    margin-bottom: 10px;
+}
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+}
+.cart-sidebar {
+    width: 320px;
+    background-color: #fff;
+    border-left: 1px solid #e2e8f0;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+.cart-items-container {
+    flex: 1;
+    overflow-y: auto;
+    margin: 20px 0;
+}
+.cart-summary {
+    border-top: 1px solid #e2e8f0;
+    padding-top: 20px;
+}
+.checkout-btn {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.checkout-btn:hover:not(:disabled) {
+    background-color: #1d4ed8;
+}
+.checkout-btn:disabled {
+    background-color: #cbd5e1;
+    color: #94a3b8;
+    cursor: not-allowed;
+}

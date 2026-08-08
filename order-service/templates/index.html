@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Service Catalog</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+    <div class="catalog-container">
+        <!-- Sidebar Selection Panel -->
+        <aside class="catalog-sidebar">
+            <h2>Catalog Layers</h2>
+            <ul id="catalog-list" class="catalog-list">
+                <li class="catalog-item" data-id="1">Core Infrastructure</li>
+                <li class="catalog-item" data-id="2">Database Services</li>
+                <li class="catalog-item" data-id="3">Application Security</li>
+                <li class="catalog-item" data-id="4">Monitoring & Logging</li>
+            </ul>
+        </aside>
+
+        <!-- Main Content Display Window -->
+        <main class="catalog-content">
+            <header>
+                <h1 id="selected-title">Select a Catalog Layer</h1>
+            </header>
+            <section id="item-details" class="item-details">
+                <p id="selected-description">Please choose a layer from the left to view available products.</p>
+                <div id="product-grid" class="product-grid">
+                    <!-- Cards pull and inject directly here via script.js -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Shopping Cart Drawer Sidebar -->
+        <aside class="cart-sidebar">
+            <h2>Your Shopping Cart</h2>
+            <div id="cart-items" class="cart-items-container">
+                <p class="empty-cart-msg">Your cart is empty.</p>
+            </div>
+            <div class="cart-summary">
+                <div class="summary-line" style="margin-bottom: 12px; font-size: 14px;">
+                    Total Items: <span id="cart-count" style="font-weight: 700; color: #2563eb;">0</span>
+                </div>
+                <button id="checkout-btn" class="checkout-btn" style="width: 100%; padding: 12px; font-weight: 600; border-radius: 6px;" disabled>Submit Order</button>
+            </div>
+        </aside>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

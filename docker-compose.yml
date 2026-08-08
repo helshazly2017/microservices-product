@@ -1,0 +1,86 @@
+services:
+  # 1. Message Broker Event Stream Engine
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # AMQP protocol port for backend microservice loops
+      - "15672:15672" # Web UI Dashboard Panel (guest/guest)
+    networks:
+      - microservice-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # 2. Relational Persistent Transaction Storage Database
+  postgres_db:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: orders_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata_clean:/var/lib/postgresql/data
+    networks:
+      - microservice-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d orders_db"]
+      interval: 3s   # Checked more frequently on startup
+      timeout: 3s
+      retries: 10
+
+  # 3. Product Catalog Core Inventory Microservice
+  product-service:
+    build:
+      context: ./product-service  # Maps cleanly to underscore directory configurations
+    container_name: product-service
+    ports:
+      - "8001:8001"
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      # ✅ Shared DB Parameter Mapping passed to product application initialization layers
+      - DATABASE_URL=postgresql+psycopg://postgres:postgres@postgres_db:5432/orders_db
+    depends_on:
+      postgres_db:
+        condition: service_healthy  # Holds off engine launch until database passes pg_isready
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      microservice-network:
+        aliases:
+          - product-service
+
+  # 4. Shopping Cart Checkout Order Management Microservice
+  order-service:
+    build:
+      context: ./order-service
+    container_name: order-service
+    ports:
+      - "8002:8002"
+    environment:
+      - DATABASE_URL=postgresql+psycopg://postgres:postgres@postgres_db:5432/orders_db
+      - RABBITMQ_HOST=rabbitmq
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      product-service:
+        condition: service_started
+    networks:
+      microservice-network:
+        aliases:
+          - order-service
+
+networks:
+  microservice-network:
+    driver: bridge
+
+volumes:
+  pgdata_clean:
+    driver: local

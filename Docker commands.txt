@@ -1,0 +1,37 @@
+pip install fastapi uvicorn pydantic
+
+uvicorn main:app --reload
+
+##############################RabbitMQ Management Interface: 
+http://localhost:15672 (Guest login: guest/guest)
+
+
+##############################Product Service OpenAPI Docs: 
+http://localhost:8001/docs
+
+##############################Order Service OpenAPI Docs: 
+http://localhost:8002/docs
+
+##############################Open a new terminal window on your machine and run this command:
+
+docker-compose logs product-service
+
+docker exec -it rabbitmq rabbitmqadmin declare queue name=history_tracker durable=true
+docker exec -it rabbitmq rabbitmqadmin declare binding source=amq.rabbitmq.trace destination=history_tracker routing_key="#"
+
+docker-compose up
+
+docker exec -it postgres_db psql -U user -d microservices_db
+
+docker-compose build --no-cache order-service
+
+
+############################## Launch the stack: Run this command in the directory containing your docker-compose.yml file:
+
+############################## restart system cluster architecture 
+
+# Stop the containers
+docker-compose down
+
+# Restart and rebuild
+docker-compose up --build
