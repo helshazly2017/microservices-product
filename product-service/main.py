@@ -7,10 +7,22 @@ from pydantic import BaseModel
 from sqlalchemy.exc import OperationalError
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
+import os
 
 # 1. Database Setup (Points to the postgres container defined in docker-compose)
-DATABASE_URL = "postgresql://user:password@db:5432/microservices_db"
-engine = create_engine(DATABASE_URL)
+# DATABASE_URL = "postgresql://user:password@db:5432/microservices_db"
+# 1. Grab DATABASE_URL env var. If missing, fall back to a local string.
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql+psycopg://postgres:postgres@postgres-db:5432/orders_db"
+)
+# 2. Print it to the container logs so you can see exactly where it's connecting
+print(f"📡 Product service initializing connection to database endpoint: {DATABASE_URL}")
+
+# 3. Instantiate engine with safety checkers
+engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+
+# engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
@@ -35,7 +47,8 @@ class ProductModel(Base):
     name = Column(String, index=True)
     price = Column(Float)
     in_stock = Column(Boolean, default=True)
-
+    # ✅ Add this property to match your live database updates
+    layer_id = Column(Integer, default=1, index=True)
 
 Base.metadata.create_all(bind=engine)
 
